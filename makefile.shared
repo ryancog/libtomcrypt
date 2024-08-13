@@ -40,6 +40,13 @@ else
 endif
 
 ifeq ($(PLATFORM), Darwin)
+	SONAME := -Wl,-install_name,$(TARGET).$(VERSION_MAJOR)
+	LTC_CFLAGS+=-maes
+else
+	SONAME := -Wl,-soname,$(TARGET).$(VERSION_MAJOR)
+endif
+
+ifeq ($(PLATFORM), Darwin)
 	TARGET := $(NAME).dylib
 else ifeq ($(OS), Windows_NT)
 	TARGET := $(NAME).dll
@@ -83,7 +90,7 @@ src/ciphers/aes/aes_enc_desc.o: src/ciphers/aes/aes_desc.c
 	$(CC) $(LTC_CFLAGS) $(PIC) $(CPPFLAGS) -o $@ -c $<
 
 $(LIBNAME): $(OBJECTS)
-	$(CC) $(LTC_LDFLAGS) $(OBJECTS) $(EXTRALIBS) $(SHARED) -Wl,-soname,$(TARGET).$(VERSION_MAJOR) $(NO_UNDEFINED) -o $@
+	$(CC) $(LTC_LDFLAGS) $(OBJECTS) $(EXTRALIBS) $(SHARED) $(SONAME) $(NO_UNDEFINED) -o $@
 
 $(TARGET).$(VERSION_MAJOR) $(TARGET): $(LIBNAME)
 	ln -sf $< $@
