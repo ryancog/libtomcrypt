@@ -500,7 +500,7 @@ HEADER_FILES=$(notdir $(HEADERS_PUB))
 #This rule cleans the source tree of all compiled code, not including the pdf
 #documentation.
 clean: $(call print-help,clean,Clean everything besides the pdf documentation)
-	find . -type f    -name "*.o"   \
+	find src -type f    -name "*.o"   \
                -o -name "*.a"     \
                -o -name "*.obj"   \
                -o -name "*.lib"   \
