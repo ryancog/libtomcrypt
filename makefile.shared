@@ -40,7 +40,6 @@ else
 endif
 
 ifeq ($(PLATFORM), Darwin)
-	SONAME := -Wl,-install_name,$(TARGET).$(VERSION_MAJOR)
 	LTC_CFLAGS+=-maes
 else
 	SONAME := -Wl,-soname,$(TARGET).$(VERSION_MAJOR)
