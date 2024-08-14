@@ -41,16 +41,20 @@ endif
 
 ifeq ($(PLATFORM), Darwin)
 	LTC_CFLAGS+=-maes
+	SONAME = -Wl,-install_name,$(TARGET)
 else
-	SONAME := -Wl,-soname,$(TARGET).$(VERSION_MAJOR)
+	# Must be `=` and not `:=` to resolve later.
+	SONAME = -Wl,-soname,$(TARGET)
 endif
 
-ifeq ($(PLATFORM), Darwin)
-	TARGET := $(NAME).dylib
-else ifeq ($(OS), Windows_NT)
-	TARGET := $(NAME).dll
-else
-	TARGET := $(NAME).so
+ifndef TARGET
+	ifeq ($(PLATFORM), Darwin)
+		TARGET := $(NAME).dylib
+	else ifeq ($(OS), Windows_NT)
+		TARGET := $(NAME).dll
+	else
+		TARGET := $(NAME).so
+	endif
 endif
 
 #Output filenames for various targets.
