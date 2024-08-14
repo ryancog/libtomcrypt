@@ -14,7 +14,11 @@
 # make -f makefile.shared PREFIX=/opt/libtom install
 #
 
-PLATFORM := $(shell uname | sed -e 's/_.*//')
+ifneq (,$(findstring mingw,$(CROSS_COMPILE)))
+	PLATFORM := Win32
+else
+	PLATFORM := $(shell uname | sed -e 's/_.*//')
+endif
 ### Observed uname outputs:
 # MINGW32_NT-6.2          (on MSYS/MINGW old)
 # MINGW64_NT-10.0-14393   (on MSYS new)
@@ -47,14 +51,14 @@ else
 	SONAME = -Wl,-soname,$(TARGET)
 endif
 
-ifndef TARGET
-	ifeq ($(PLATFORM), Darwin)
-		TARGET := $(NAME).dylib
-	else ifeq ($(OS), Windows_NT)
-		TARGET := $(NAME).dll
-	else
-		TARGET := $(NAME).so
-	endif
+ifeq ($(PLATFORM), Darwin)
+	TARGET := $(NAME).dylib
+else ifeq ($(OS), Windows_NT) 
+	TARGET := $(NAME).dll
+else ifeq ($(PLATFORM), Win32)
+	TARGET := $(NAME).dll
+else
+	TARGET := $(NAME).so
 endif
 
 #Output filenames for various targets.
