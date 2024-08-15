@@ -31,7 +31,13 @@ endif
 INSTALL_CMD := install
 UNINSTALL_CMD := rm -f
 
-NAME := libtomcrypt
+ifeq ($(OS), Windows_NT)
+	NAME := tomcrypt
+else ifeq ($(PLATFORM), Win32)
+	NAME := tomcrypt
+else
+	NAME := libtomcrypt
+endif
 PIC := -fPIC
 SHARED := $(PIC)
 
@@ -63,7 +69,7 @@ endif
 
 #Output filenames for various targets.
 ifndef LIBNAME
-	LIBNAME = $(TARGET).$(VERSION_LT)
+	LIBNAME = $(TARGET)
 endif
 
 include makefile_include.mk
@@ -98,9 +104,6 @@ src/ciphers/aes/aes_enc_desc.o: src/ciphers/aes/aes_desc.c
 
 $(LIBNAME): $(OBJECTS)
 	$(CC) $(LTC_LDFLAGS) $(OBJECTS) $(EXTRALIBS) $(SHARED) $(SONAME) $(NO_UNDEFINED) -o $@
-
-$(TARGET).$(VERSION_MAJOR) $(TARGET): $(LIBNAME)
-	ln -sf $< $@
 
 .bin/$(TEST): $(TARGET).$(VERSION_MAJOR) $(TARGET) $(TOBJECTS) .bin/.tag
 	$(CC) $(LTC_LDFLAGS) $(TOBJECTS) -L. -ltomcrypt $(EXTRALIBS) $(NO_UNDEFINED) -o $@
