@@ -50,7 +50,6 @@ else
 endif
 
 ifeq ($(PLATFORM), Darwin)
-	LTC_CFLAGS+=-maes
 	SONAME = -Wl,-install_name,$(TARGET)
 else
 	# Must be `=` and not `:=` to resolve later.
